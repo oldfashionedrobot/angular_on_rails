@@ -1,0 +1,24 @@
+{
+  "name": "angular_on_rails",
+  "version": "1.0.0",
+  "description": "This README would normally document whatever steps are necessary to get the application up and running.",
+  "main": "index.js",
+  "dependencies": {
+    "angular": "^1.6.4",
+    "angular-ui-router": "^1.0.0-rc.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/oldfashionedrobot/angular_on_rails.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/oldfashionedrobot/angular_on_rails/issues"
+  },
+  "homepage": "https://github.com/oldfashionedrobot/angular_on_rails#readme"
+}
