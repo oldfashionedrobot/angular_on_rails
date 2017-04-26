@@ -1,0 +1,2 @@
+module GuysHelper
+end
