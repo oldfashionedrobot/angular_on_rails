@@ -5,3 +5,20 @@
 #
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
+Note.destroy_all
+
+print 'Seeding Notes'
+
+User.all.each do
+  5.times do
+    Note.create(
+      body: Faker::Lorem.sentence,
+      title: Faker::Lorem.word,
+      category: Faker::Company.buzzword,
+      user_id: User.first.id
+    )
+    print '.'
+  end
+  print '.'
+end
+print "\n Seeding Done."
