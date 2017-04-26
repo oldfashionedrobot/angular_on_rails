@@ -10,6 +10,8 @@ NotesEditController.$inject = ['$http', '$stateParams', '$state'];
 function NotesEditController($http, $stateParams, $state) {
   var vm = this;
 
+  vm.note = {};
+
   vm.saveNote = saveNote;
 
   $http.get('/api/notes/' + $stateParams.id).then(function(resp) {
@@ -19,7 +21,7 @@ function NotesEditController($http, $stateParams, $state) {
   function saveNote() {
     $http.put('/api/notes/' + $stateParams.id, vm.note).then(function(resp) {
       if(resp.status == 200) {
-        $state.go('notesShow', { id: $stateParams.id })
+        $state.go('notesShow', { id: resp.data.id })
       } else {
         alert('Something went wrong when trying to update')
       }
