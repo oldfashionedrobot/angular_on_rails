@@ -46,7 +46,11 @@ class Api::NotesController < ApplicationController
 
   private
   # Only allow a trusted parameter "white list" through.
+  # Also we want to add the current_user's id to the hash
+  # We can do that with .merge
   def note_params
-    params.require(:note).permit(:body, :title, :user_id, :category)
+    params.require(:note)
+          .permit(:body, :title, :category)
+          .merge(user_id: current_user.id)
   end
 end
