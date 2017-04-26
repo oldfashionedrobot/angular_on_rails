@@ -1,6 +1,4 @@
 class NotesController < ApplicationController
-  before_action :set_note, only: [:show, :edit, :update, :destroy]
-
   # GET /notes
   def index
     @notes = current_user.notes
@@ -8,6 +6,7 @@ class NotesController < ApplicationController
 
   # GET /notes/1
   def show
+    @note = current_user.notes.find(params[:id])
   end
 
   # GET /notes/new
@@ -17,6 +16,7 @@ class NotesController < ApplicationController
 
   # GET /notes/1/edit
   def edit
+    @note = current_user.notes.find(params[:id])
   end
 
   # POST /notes
@@ -32,6 +32,7 @@ class NotesController < ApplicationController
 
   # PATCH/PUT /notes/1
   def update
+    @note = current_user.notes.find(params[:id])
     if @note.update(note_params)
       redirect_to @note, notice: 'Note was successfully updated.'
     else
@@ -41,18 +42,14 @@ class NotesController < ApplicationController
 
   # DELETE /notes/1
   def destroy
+    @note = current_user.notes.find(params[:id])
     @note.destroy
     redirect_to notes_url, notice: 'Note was successfully destroyed.'
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_note
-      @note = current_user.notes.find(params[:id])
-    end
-
-    # Only allow a trusted parameter "white list" through.
-    def note_params
-      params.require(:note).permit(:body, :title, :user_id, :category)
-    end
+  # Only allow a trusted parameter "white list" through.
+  def note_params
+    params.require(:note).permit(:body, :title, :user_id, :category)
+  end
 end
