@@ -1,19 +1,19 @@
 class Api::NotesController < ApplicationController
-  before_action :set_note, only: [:show, :update, :destroy]
-
-  # GET /notes
+  # GET /api/notes
   def index
     @notes = current_user.notes
 
     render json: @notes
   end
 
-  # GET /notes/1
+  # GET /api/notes/:id
   def show
+    @note = current_user.notes.find(params[:id])
+
     render json: @note
   end
 
-  # POST /notes
+  # POST /api/notes
   def create
     @note = Note.new(note_params)
 
@@ -24,8 +24,10 @@ class Api::NotesController < ApplicationController
     end
   end
 
-  # PATCH/PUT /notes/1
+  # PATCH/PUT /api/notes/:id
   def update
+    @note = current_user.notes.find(params[:id])
+
     if @note.update(note_params)
       render json: @note, status: :ok
     else
@@ -33,19 +35,16 @@ class Api::NotesController < ApplicationController
     end
   end
 
-  # DELETE /notes/1
+  # DELETE /api/notes/:id
   def destroy
+    @note = current_user.notes.find(params[:id])
+
     @note.destroy
+
     render json: '', status: :no_content
   end
 
   private
-
-  # Use callbacks to share common setup or constraints between actions.
-  def set_note
-    @note = current_user.notes.find(params[:id])
-  end
-
   # Only allow a trusted parameter "white list" through.
   def note_params
     params.require(:note).permit(:body, :title, :user_id, :category)
