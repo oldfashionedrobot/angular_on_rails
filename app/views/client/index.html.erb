@@ -8,7 +8,7 @@
     <%= javascript_include_tag 'application' %>
   </head>
 
-  <body>
+  <body ng-app="myApp">
     <nav>
       <% if user_signed_in? %>
         <%= link_to 'Home', root_path %>
@@ -19,8 +19,6 @@
 
     <p class="notice"><%= notice %></p>
     <p class="alert"><%= alert %></p>
-
-    <h1>This is our front end view</h1>
 
     <ui-view></ui-view>
   </body>

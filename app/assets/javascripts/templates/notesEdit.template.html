@@ -1,0 +1,14 @@
+<h1>Edit Note</h1>
+
+<form>
+  <label>Title</label>
+  <input ng-model="$ctrl.note.title" />
+  <br/>
+  <label>Body</label>
+  <textarea ng-model="$ctrl.note.body"></textarea>
+  <br/>
+  <label>Category</label>
+  <input ng-model="$ctrl.note.category" />
+  <br/>
+  <button ng-click="$ctrl.saveNote()">Update</button>
+<form>

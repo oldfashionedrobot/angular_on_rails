@@ -1,0 +1,24 @@
+<h1>Show Note</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Body</th>
+      <th>Title</th>
+      <th>User</th>
+      <th>Category</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <tr>
+      <td>{{ $ctrl.note.body }}</td>
+      <td>{{ $ctrl.note.title }}</td>
+      <td>{{ $ctrl.note.user_id }}</td>
+      <td>{{ $ctrl.note.category }}</td>
+      <td><a ui-sref="notesEdit({id: $ctrl.note.id})">Edit</a></td>
+      <td><a href="/api/notes/{{ $ctrl.note.id }}" method="DELETE">Delete</a></td>
+    </tr>
+  </tbody>
+</table>
