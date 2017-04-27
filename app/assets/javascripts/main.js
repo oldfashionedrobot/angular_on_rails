@@ -1,5 +1,5 @@
 angular
-  .module('myApp', ['ui.router', 'templates'])
+  .module('myApp', ['ui.router'])
   .config(function ($stateProvider, $urlRouterProvider, $locationProvider) {
     $stateProvider
       .state('notesIndex', {
