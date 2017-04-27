@@ -12,8 +12,8 @@
     <nav>
       <% if user_signed_in? %>
         <%= link_to 'Home', root_path %>
-        <%= link_to 'Edit account', edit_user_registration_path %>
-        <%= link_to 'Sign out', destroy_user_session_path, :method=>'delete' %>
+        <%= link_to 'Edit account', edit_user_registration_path, target: '_self' %>
+        <%= link_to 'Sign out', destroy_user_session_path, method: 'delete', target: '_self' %>
       <% end %>
     </nav>
 
