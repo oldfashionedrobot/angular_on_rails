@@ -6,7 +6,7 @@
 //= require_tree .
 
 angular
-  .module('myApp', ['ui.router'])
+  .module('notesApp', ['ui.router'])
   .config(function ($stateProvider, $urlRouterProvider, $locationProvider) {
     $stateProvider
       .state('notesIndex', {
