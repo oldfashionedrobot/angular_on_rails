@@ -307,6 +307,8 @@ You should now be able to hit the path `/api/notes` in your browser to see a JSO
 ## Next Steps
 Try injecting `$http` into the `homePage` component and using it to make an AJAX request to the `/api/notes` path, then display the JSON response data in the view. After that, try making the rest of the CRUD views on the front end and routes/actions on the back end.
 
+Also, if you want to be able to write ES6 style JS, check out this gem: https://github.com/TannerRogalsky/sprockets-es6.
+
 <details>
 
   <summary>Solution</summary>
