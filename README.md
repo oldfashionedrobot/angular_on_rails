@@ -213,7 +213,7 @@ In the new `app/assets/javascripts/components` folder, create a folder called `h
 In the new `app/assets/javascripts/components/homePage/homePage.js.erb` file, add the following:
 ```javascript
 angular
-  .module('myApp')
+  .module('myAppName')
   .component('homePage', {
     templateUrl: '<%= asset_path("components/homePage/homePage") %>',
     controller: HomePageController
@@ -305,7 +305,7 @@ Try injecting `$http` into the `homePage` component and using it to make an AJAX
 ```javascript
 /// !!! In app/assets/javascripts/components/homePage/homePage.js.erb
 angular
-  .module('myApp')
+  .module('myAppName')
   .component('homePage', {
     templateUrl: '<%= asset_path("components/homePage/homePage") %>',
     controller: HomePageController
