@@ -1,6 +1,8 @@
 # Angular SPA on Rails: Walkthrough
 This will walk through creating a Rails app with the [Devise](https://github.com/plataformatec/devise) gem for authentication and Angular + UI-Router on the front end.
 
+_To see how to convert an existing Rails app to use Angular on the front end see the [Readme on this branch](https://github.com/oldfashionedrobot/angular_on_rails/tree/convert)_
+
 ## Create a Rails App
 Lets use the `rails new` command to create a new Rails app, and `cd` into the directory that gets created. We want to use PostgreSQL, and we don't want to include Turbolinks, because it doesn't work with UI-Router.
 ```
