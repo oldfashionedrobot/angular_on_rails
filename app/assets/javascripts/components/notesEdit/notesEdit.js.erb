@@ -5,21 +5,21 @@ angular
     controller: NotesEditController
   });
 
-NotesEditController.$inject = ['$http', '$stateParams', '$state'];
+NotesEditController.$inject = ['notesService', '$stateParams', '$state'];
 
-function NotesEditController($http, $stateParams, $state) {
+function NotesEditController(notesService, $stateParams, $state) {
   var vm = this;
 
   vm.note = {};
 
   vm.saveNote = saveNote;
 
-  $http.get('/api/notes/' + $stateParams.id).then(function(resp) {
+  notesService.getNote($stateParams.id).then(function(resp) {
     vm.note = resp.data;
   });
 
   function saveNote() {
-    $http.put('/api/notes/' + $stateParams.id, vm.note).then(function(resp) {
+    notesService.updateNote(vm.note).then(function(resp) {
       if(resp.status == 200) {
         $state.go('notesShow', { id: resp.data.id })
       } else {

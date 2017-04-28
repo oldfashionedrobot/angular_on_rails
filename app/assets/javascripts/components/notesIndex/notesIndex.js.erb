@@ -5,14 +5,14 @@ angular
     controller: NotesIndexController
   });
 
-NotesIndexController.$inject = ['$http'];
+NotesIndexController.$inject = ['notesService'];
 
-function NotesIndexController($http) {
+function NotesIndexController(notesService) {
   var vm = this;
 
   vm.notes = [];
 
-  $http.get('/api/notes').then(function(resp) {
+  notesService.getNotes().then(function(resp) {
     vm.notes = resp.data;
   });
 }

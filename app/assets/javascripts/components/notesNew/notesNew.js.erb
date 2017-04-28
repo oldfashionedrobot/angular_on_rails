@@ -5,9 +5,9 @@ angular
     controller: NotesNewController
   });
 
-NotesNewController.$inject = ['$http', '$state'];
+NotesNewController.$inject = ['notesService', '$state'];
 
-function NotesNewController($http, $state) {
+function NotesNewController(notesService, $state) {
   var vm = this;
 
   vm.note = {
@@ -19,7 +19,7 @@ function NotesNewController($http, $state) {
   vm.saveNote = saveNote;
 
   function saveNote() {
-    $http.post('/api/notes/', vm.note).then(function(resp) {
+    notesService.createNote(vm.note).then(function(resp) {
       if(resp.status == 201) {
         $state.go('notesShow', { id: resp.data.id })
       } else {
