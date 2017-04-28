@@ -91,7 +91,7 @@ The order of these `require` statements matter, so your `application.js` file sh
 Now we have Angular and UI-Router accessible in our app, and since we also set up NPM we can use it to install any other front end modules we might need later.
 
 ## Serve up our front end
-We'll need to make a Rails controller that will serve up the HTML/CSS/JS that our Angluar app will handle.
+We'll need to make a Rails controller that will serve up the HTML/CSS/JS that our Angular app will handle.
 
 #### Client Controller
 Create a file called `client_controller.rb` in the `app/controllers` folder. In that new file add this code:
@@ -164,12 +164,12 @@ Your `app/views/layouts/application.html.erb` should look something like this:
 ```
 
 #### Client Routes
-We have our controller and view set up, but we still need to tell Rails to render them. Add the following lines to the `config/routes.rb` file just before the `end`:
+We have our controller and view set up, but we still need to tell Rails to route to them. Add the following lines to the `config/routes.rb` file just before the `end`:
 ```ruby
 root to: 'client#index'
 get '*path', to: 'client#index'
 ```
-The `root to:` line sends the base url `localhost:3000` to the `app/views/client/index.html.erb` HTML file we just made. The `get '*path'` line sends any other routes that don't match anything to the same file. Basically, those would be routes that we didn't tell Rails how to handle, so we want to send it to the front end and let Angular handle it.
+The `root to:` line sends the base url `localhost:3000` to the `app/views/client/index.html.erb` HTML file we just made. The `get '*path'` line sends any other routes that don't match anything to the same file. Basically, those would be routes that we didn't tell Rails how to handle, so we want to send it to the front end and let Angular handle them.
 
 If you load `localhost:3000` in your browser now, (might need to restart your server) you should see the new view we just made.
 
@@ -218,7 +218,7 @@ In the new `app/assets/javascripts/components` folder, create a folder called `h
 * `homePage.html`
 * `homePage.scss`
 
-In the new `app/assets/javascripts/components/homePage/homePage.js.erb` file add the following:
+In the new `app/assets/javascripts/components/homePage/homePage.js.erb` file, add the following:
 ```javascript
 angular
   .module('myApp')
@@ -235,6 +235,9 @@ function HomePageController() {
   vm.message = 'Hello World!';
 }
 ```
+Notice that because we added `.erb` after `.js` in the file name, we can use ERB tags and take advantage of Rails's `asset_path` helper method.
+
+
 And in `app/assets/javascripts/components/homePage/homePage.html` add:
 ```html
 <h1>Home Page</h1>
@@ -268,7 +271,7 @@ Right above the `*= require_tree .` line, add `*= require_tree ../javascripts/co
 Refresh the page (might need to restart server) and our `homePage` component should be rendered. You can now add components to the `app/assets/javascripts/components` folder in the same way we added the `homePage` component, and they'll properly be pulled into the Asset Pipeline.
 
 ## Make an API Controller
-Any Rails controller/routes that we add now should be API-like and just return JSON to AJAX requests that we can call from the Angular app. We'll also want to namespace them in an `api` namespace. Below will walk through the steps of adding a model and a controller to return JSON data of that model.
+Any Rails controller/routes that we add now should be API-like and just return JSON to AJAX requests that we will call from the Angular front end. We'll also want to namespace them in an `api` namespace. Below will walk through the steps of adding a model and a controller to return JSON data of that model.
 
 First create a model with a generator in the command line, then run migrations.
 ```
