@@ -13,7 +13,7 @@ $ bundle install
 $ rails db:create
 $ rails db:migrate
 ```
-That should clone the app, install the gems, and set up your database. You can run the server with `rails s`. Once it's running, try creating a User for yourself by signing up.
+ That should clone the app, install the gems, and set up your database. You can run the server with `rails s`. Once it's running, try creating a User for yourself by signing up. Also make sure that you're working in the `master` branch.
 
 ## Adding angular to Rails
 In this walkthrough we're going to use NPM to manage our front end dependencies. In the command line run:
