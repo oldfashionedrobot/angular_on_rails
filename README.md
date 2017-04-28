@@ -250,7 +250,7 @@ body {
   }
 }
 ```
-In order to get Rails to pull in any `.css` or `.scss` in our components folders, we need to add a line to `app/assets/styleshees/application.css`.
+In order to get Rails to pull in any `.css` or `.scss` in our components folders, we need to add a line to `app/assets/styleshees/application.css`. _Also Rails by default comes with a SASS gem, so if you want to use it, you can just rename your `.css` file to `.scss` and you can start coding with SASS._
 
 Right above the `*= require_tree .` line, add `*= require_tree ../javascripts/components/` like below:
 ```css
