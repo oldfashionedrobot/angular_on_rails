@@ -197,9 +197,9 @@ angular
 ```
 Notice the `//= require_self` that was added above the `//= require_tree .` line. This makes sure that this app initialization/configuration code is loaded before the rest of the files in the `app/assets/javascripts` directory.
 
-Bind our new app to the `app/views/client/index.html.erb` view by adding `ng-app="myApp"` on the opening `<body>` tag.
+Bind our new app to the `app/views/client/index.html.erb` view by adding `ng-app="myAppName"` on the opening `<body>` tag.
 ```html
-<body ng-app="myApp">
+<body ng-app="myAppName">
 ```
 
 ## Create a Component
