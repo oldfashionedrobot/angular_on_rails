@@ -1,47 +1,19 @@
 # Angular SPA on Rails: Walkthrough
-This will walk through creating a Rails app with the [Devise](https://github.com/plataformatec/devise) gem for authentication and Angular + UI-Router on the front end.
+This walkthrough will take you from a basic server-side only Rails app to having an Angular SPA on the front end that talks to the Rails back end via AJAX requests and JSON responses.
 
-## Create a Rails App
-Lets use the `rails new` command to create a new Rails app, and `cd` into the directory that gets created. We want to use PostgreSQL, and we don't want to include Turbolinks, because it doesn't work with UI-Router.
+This repo has a basic Rails app with two models, Users and Notes. Users can sign up,  log in, and perform CRUD actions on Notes. Authentication functionality is provided by the [Devise](https://github.com/plataformatec/devise) gem.
+
+Currently, everything is rendered server-side, and there is no JS on the front end.
+
+Before we get started, you'll need to clone this repo and get the app set up locally. You can do so with the following commands:
 ```
-$ rails new app_name -d=postgresql --skip-turbolinks
-$ cd app_name
-```
-Add the following lines to the Gemfile:
-```ruby
-gem 'devise'
-gem 'angular_rails_csrf'
-```
-Then install the gems by running:
-```
+$ git clone https://github.com/oldfashionedrobot/angular_on_rails.git
+$ cd angular_on_rails
 $ bundle install
-```
-Now let's setup Devise.
-```
-$ rails g devise:install
-```
-After that runs, we need to add the following lines to `app/views/layouts/application.html.erb` just below the opening `<body>` tag:
-```html
-<p class="notice"><%= notice %></p>
-<p class="alert"><%= alert %></p>
-```
-Then we need to add `before_action :authenticate_user!` to the `app/controllers/application_controller.rb` file like this:
-```ruby
-class ApplicationController < ActionController::Base
-  protect_from_forgery with: :exception
-  before_action :authenticate_user!
-end
-```
-
-Assuming we want our Devise model to be called User, we can generate our User model with:
-```
-$ rails g devise User
-```
-Then create our database and run migrations with:
-```
 $ rails db:create
 $ rails db:migrate
 ```
+That should clone the app, install the gems, and set up your database. You can run the server with `rails s`. Once it's running, try creating a User for yourself by signing up.
 
 ## Adding angular to Rails
 In this walkthrough we're going to use NPM to manage our front end dependencies. In the command line run:
@@ -82,8 +54,160 @@ The order of these `require` statements matter, so your `application.js` file sh
 ```
 Now we have Angular and UI-Router accessible in our app, and since we also set up NPM we can use it to install any other front end modules we might need later.
 
+## Setting up routes
+Currently, our routing and view rendering is all being handled by the Rails server.
+In an Angular [SPA](https://en.wikipedia.org/wiki/Single-page_application), the routes and view rendering happens on the front end, and the server
+simply acts as an [API](https://en.wikipedia.org/wiki/Application_programming_interface), providing JSON endpoints that can respond to AJAX requests.
+
+If you look at the `/config/routes.rb` file, you'll see this:
+```ruby
+Rails.application.routes.draw do
+  devise_for :users
+
+  resources :notes
+
+  root to: 'notes#index'
+end
+```
+Right now if you go the path `/notes` in your app, you'll see a view rendered by a Rails controller. We want our Angular app to handle our views, but we still need our Rails routes available to be able to get data from the back end to the front end.
+
+To do that we'll need to put our Rails routes in a [namespace](https://en.wikipedia.org/wiki/Namespace). This allows us to name our Rails and Angular routes whatever we want and not worry about them overlapping. Change your `/config/routes.rb` file to look like this:
+```ruby
+Rails.application.routes.draw do
+  devise_for :users
+
+  namespace :api do
+    resources :notes
+  end
+end
+```
+By wrapping our Notes routes in a namespace, the old path like `/notes` now would be `/api/notes`. Notice that we also want to remove the `root to: 'notes#index'` line, since our root path will be handled by Angular.
+
+When using routes with a namespace, Rails expects the controller the routes point to to be in a folder with the same name. In `app/controllers`, you'll see our `notes_controller.rb`. We'll need to do the following:
+1. Create a folder called `api` in the `app/controllers` folder.
+2. Move our `notes_controller.rb` file into the new `app/controllers/api` folder.
+3. Edit the first line of the `notes_controller.rb` file and put `Api::` in front of `NotesController`
+
+The top line of your `notes_controller.rb` file should look like this:
+```ruby
+class Api::NotesController < ApplicationController
+```
+
+## Creating our Api Controller
+Our `Api::NotesController` currently isn't very API-like. It will still try to render html views. We need to update the controller to simply render JSON. With Rails, this is actually really simple to do.
+
+First we can get rid of the `new` and `edit` methods. Then change the remaining methods like so:
+#### index
+```ruby
+# change this
+# GET /notes
+def index
+  @notes = current_user.notes
+end
+
+# to this
+# GET /api/notes
+def index
+  @notes = current_user.notes
+  render json: @notes
+end
+```
+#### show
+```ruby
+# change this
+# GET /notes/1
+def show
+  @note = current_user.notes.find(params[:id])
+end
+
+# to this
+# GET /api/notes/1
+def show
+  @note = current_user.notes.find(params[:id])
+  render json: @note
+end
+```
+#### create
+```ruby
+# change this
+# POST /notes
+def create
+  @note = Note.new(note_params)
+
+  if @note.save
+    redirect_to @note, notice: 'Note was successfully created.'
+  else
+    render :new
+  end
+end
+
+# to this
+# POST /api/notes
+def create
+  @note = Note.new(note_params)
+
+  if @note.save
+    render json: @note, status: :created
+  else
+    render json: @note.errors, status: :unprocessable_entity
+  end
+end
+
+```
+#### update
+```ruby
+# change this
+# PATCH/PUT /notes/1
+def update
+  @note = current_user.notes.find(params[:id])
+
+  if @note.update(note_params)
+    redirect_to @note, notice: 'Note was successfully updated.'
+  else
+    render :edit
+  end
+end
+
+# to this
+# PATCH/PUT /api/notes/1
+def update
+  @note = current_user.notes.find(params[:id])
+
+  if @note.save
+    render json: @note, status: :ok
+  else
+    render json: @note.errors, status: :unprocessable_entity
+  end
+end
+```
+### destroy
+```ruby
+# change this
+# DELETE /notes/1
+def destroy
+  @note = current_user.notes.find(params[:id])
+
+  @note.destroy
+
+  redirect_to notes_url, notice: 'Note was successfully destroyed.'
+end
+
+# to this
+# DELETE /api/notes/1
+def destroy
+  @note = current_user.notes.find(params[:id])
+
+  @note.destroy
+
+  render json: '', status: :no_content
+end
+```
+With just a few lines of code, we changed all the old HTML rendering routes to simply render JSON. If your server is running (you might need to restart it) you can test out one of these routes by going to `/api/notes` in your browser. If you have no data, you can run `rails db:seed` to create some (Make sure you've at least created a User with the sign up form first).
+
+You can also get rid of the `app/views/notes` folder, since we're only rendering JSON directly from the controller now.
+
 ## Serve up our front end
-We'll need to make a Rails controller that will serve up the HTML/CSS/JS that our Angular app will handle.
+Right now, if you go to `localhost:3000`, you'll just see the Rails welcome page. We'll need to make that root path serve up the HTML/CSS/JS that our Angluar app will handle. To do this, we'll need to create a new Rails controller that renders an HTML page.
 
 #### Client Controller
 Create a file called `client_controller.rb` in the `app/controllers` folder. In that new file add this code:
@@ -212,6 +336,7 @@ In the new `app/assets/javascripts/components` folder, create a folder called `h
 
 In the new `app/assets/javascripts/components/homePage/homePage.js.erb` file, add the following:
 ```javascript
+/// !!! in app/assets/javascripts/components/homePage/homePage.js.erb
 angular
   .module('myAppName')
   .component('homePage', {
@@ -219,12 +344,17 @@ angular
     controller: HomePageController
   });
 
-HomePageController.$inject = [];
+HomePageController.$inject = ['$http'];
 
-function HomePageController() {
+function HomePageController($http) {
   var vm = this;
 
   vm.message = 'Hello World!';
+  vm.notes = [];
+
+  $http.get('/api/notes').then(function(resp) {
+    vm.notes = resp.data;
+  });
 }
 ```
 Notice that because we added `.erb` after `.js` in the file name, we can use ERB tags and take advantage of Rails's `asset_path` helper method.
@@ -232,9 +362,16 @@ Notice that because we added `.erb` after `.js` in the file name, we can use ERB
 
 And in `app/assets/javascripts/components/homePage/homePage.html` add:
 ```html
+<!-- !!! In app/assets/javascripts/components/homePage/homePage.html -->
 <h1>Home Page</h1>
 <p>
   {{ $ctrl.message }}
+</p>
+
+<p ng-repeat="note in $ctrl.notes">
+  Title: {{ note.title }}
+  <br/>
+  Body: {{ note.body }}
 </p>
 ```
 Finally, in `app/assets/javascripts/components/homePage/homePage.scss` add:
@@ -264,85 +401,3 @@ _Rails by default comes with a SASS gem, so if you want to use it, you can just 
 
 
 Refresh the page (might need to restart server) and our `homePage` component should be rendered. You can now add components to the `app/assets/javascripts/components` folder in the same way we added the `homePage` component, and they'll properly be pulled into the Asset Pipeline.
-
-## Make an API Controller
-Any Rails controller/routes that we add now should be API-like and just return JSON to AJAX requests that we will call from the Angular front end. We'll also want to namespace them in an `api` namespace. Below will walk through the steps of adding a model and a controller to return JSON data of that model.
-
-First create a model with a generator in the command line, then run migrations.
-```
-$ rails g model Note body title
-$ rails db:migrate
-```
-We'll just use a simple Note model as an example. Now we'll add a controller for this model. Make a folder called `api` in the `app/controllers` folder. In the new `app/controllers/api` folder add a new file called `notes_controller.rb`.
-
-In the new `app/controllers/api/notes_controller.rb` file add:
-```ruby
-class Api::NotesController < ApplicationController
-  # GET /api/notes
-  def index
-    @notes = Note.all
-
-    render json: @notes
-  end
-end
-```
-
-To add a route for this new controller, we'll need to change our `config/routes.rb` file to look like this:
-```ruby
-Rails.application.routes.draw do
-  devise_for :users
-
-  namespace :api do
-    resources :notes, only: [:index]
-  end
-
-  root to: 'client#index'
-  get '*path', to: 'client#index'
-end
-```
-You should now be able to hit the path `/api/notes` in your browser to see a JSON output of all the Notes. You probably don't have any in your database yet, so open up a Rails console and create some and try to view them.
-
-## Next Steps
-Try injecting `$http` into the `homePage` component and using it to make an AJAX request to the `/api/notes` path, then display the JSON response data in the view. After that, try making the rest of the CRUD views on the front end and routes/actions on the back end.
-
-<details>
-
-  <summary>Solution</summary>
-
-```javascript
-/// !!! In app/assets/javascripts/components/homePage/homePage.js.erb
-angular
-  .module('myAppName')
-  .component('homePage', {
-    templateUrl: '<%= asset_path("components/homePage/homePage") %>',
-    controller: HomePageController
-  });
-
-HomePageController.$inject = ['$http'];
-
-function HomePageController($http) {
-  var vm = this;
-
-  vm.message = 'Hello World!';
-  vm.notes = [];
-
-  $http.get('/api/notes').then(function(resp) {
-    vm.notes = resp.data;
-  });
-}
-```
-```html
-<!-- !!! In app/assets/javascripts/components/homePage/homePage.html -->
-<h1>Home Page</h1>
-<p>
-  {{ $ctrl.message }}
-</p>
-
-<p ng-repeat="note in $ctrl.notes">
-  Title: {{ note.title }}
-  <br/>
-  Body: {{ note.body }}
-</p>
-```
-
-</details>
