@@ -303,7 +303,11 @@ end
 You should now be able to hit the path `/api/notes` in your browser to see a JSON output of all the Notes. You probably don't have any in your database yet, so open up a Rails console and create some and try to view them.
 
 ## Next Steps
-Try injecting `$http` into the `homePage` component and using it to make an AJAX request to the `/api/notes` path, then display the JSON response data in the view.
+Try injecting `$http` into the `homePage` component and using it to make an AJAX request to the `/api/notes` path, then display the JSON response data in the view. After that, try making the rest of the CRUD views on the front end and routes/actions on the back end.
+
+<detaiils>
+
+  <summary>Solution</summary>
 
 ```javascript
 /// !!! In app/assets/javascripts/components/homePage/homePage.js.erb
@@ -340,3 +344,5 @@ function HomePageController($http) {
   Body: {{ note.body }}
 </p>
 ```
+
+</details>
