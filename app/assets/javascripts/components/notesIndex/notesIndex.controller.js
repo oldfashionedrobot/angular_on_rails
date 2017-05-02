@@ -1,9 +1,6 @@
 angular
   .module('notesApp')
-  .component('notesIndex', {
-    templateUrl: '<%= asset_path("components/notesIndex/notesIndex") %>',
-    controller: NotesIndexController
-  });
+  .controller('NotesIndexController', NotesIndexController)
 
 NotesIndexController.$inject = ['notesService'];
 

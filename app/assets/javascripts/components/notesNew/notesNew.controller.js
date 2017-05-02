@@ -1,13 +1,10 @@
 angular
   .module('notesApp')
-  .component('notesNew', {
-    templateUrl: '<%= asset_path("components/notesNew/notesNew") %>',
-    controller: NotesNewController
-  });
+  .controller('NotesNewController', NotesNewController);
 
-NotesNewController.$inject = ['notesService', '$state'];
+NotesNewController.$inject = ['$state', 'notesService'];
 
-function NotesNewController(notesService, $state) {
+function NotesNewController($state, notesService) {
   var vm = this;
 
   vm.note = {

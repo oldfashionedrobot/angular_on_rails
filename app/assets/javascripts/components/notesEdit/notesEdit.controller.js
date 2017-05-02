@@ -1,13 +1,10 @@
 angular
   .module('notesApp')
-  .component('notesEdit', {
-    templateUrl: '<%= asset_path("components/notesEdit/notesEdit") %>',
-    controller: NotesEditController
-  });
+  .controller('NotesEditController', NotesEditController);
 
-NotesEditController.$inject = ['notesService', '$stateParams', '$state'];
+NotesEditController.$inject = ['$stateParams', '$state', 'notesService',];
 
-function NotesEditController(notesService, $stateParams, $state) {
+function NotesEditController($stateParams, $state, notesService) {
   var vm = this;
 
   vm.note = {};
