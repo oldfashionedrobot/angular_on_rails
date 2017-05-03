@@ -1,27 +1,9 @@
-<h1>Notes</h1>
+<div class="notes-index">
 
-<table>
-  <thead>
-    <tr>
-      <th>Body</th>
-      <th>Title</th>
-      <th>User</th>
-      <th>Category</th>
-      <th colspan="3"></th>
-    </tr>
-  </thead>
+<note ng-repeat="note in $ctrl.notes" note-object="note"></note>
 
-  <tbody>
-    <tr ng-repeat="note in $ctrl.notes">
-      <td>{{ note.body }}</td>
-      <td>{{ note.title }}</td>
-      <td>{{ note.user_id }}</td>
-      <td>{{ note.category }}</td>
-      <td><a ui-sref="notesShow({id: note.id})">Show</a></td>
-      <td><a ui-sref="notesEdit({id: note.id})">Edit</a></td>
-      <td><a href="/api/notes/{{ note.id }}" data-method="DELETE" data-confirm="Are you sure?">Delete</a></td>
-    </tr>
-  </tbody>
-</table>
+<br>
 
 <a class="notes-index__create-btn" ui-sref="notesNew">Create a Note</a>
+
+</div>

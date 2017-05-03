@@ -1,6 +1,6 @@
 angular
   .module('notesApp')
-  .controller('NotesIndexController', NotesIndexController)
+  .controller('NotesIndexController', NotesIndexController);
 
 NotesIndexController.$inject = ['notesService'];
 

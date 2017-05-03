@@ -14,3 +14,8 @@
  *= require_tree .
  *= require_tree ../javascripts/components/
  */
+body {
+  background: #f4f4f4;
+
+  font-family: Georgia, serif;
+}

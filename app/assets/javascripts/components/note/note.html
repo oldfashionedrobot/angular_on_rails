@@ -1,10 +1,12 @@
 <div class="note">
-  <h3 class="note__title">{{ $ctrl.note.title }}</h3>
+  <h3 class="note__title">{{ $ctrl.noteObject.title }}</h3>
   <p class="note__category">
-    {{$ctrl.note.category}}
+    {{$ctrl.noteObject.category}}
   </p>
   <p class="note__body">
-    {{$ctrl.note.body}}
+    {{$ctrl.noteObject.body}}
   </p>
+  <a href="/notes/edit">Edit</a>
+  <a href="/notes/{{ $ctrl.noteObject.id }}">Show</a>
 </div>
 
